@@ -38,6 +38,7 @@
 					if (this.quorum_R > this.nodes_N) this.quorum_R = this.nodes_N;
 					this.Ps = nChooseK(this.nodes_N - this.quorum_W, this.quorum_R) / nChooseK(this.nodes_N, this.quorum_R);
 					this.Psk = Math.pow(this.Ps, this.versions);
+					this.Psk_inv = 1 - this.Psk;
 				}
 			});
 		}
@@ -62,7 +63,7 @@
 
 	<p>Equation 1 = <span data-var="Ps" data-format="%.5f"></span></p>
 	<p>Equation 2 = <span data-var="Psk" data-format="%.5f"></span></p>
-
+	<p>Def 1 = <span data-var="Psk_inv" data-format="%.5f"></span></p>
 	</div>
 
 </body>
