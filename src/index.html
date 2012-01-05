@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Tangle document</title>
+
+	<!-- Tangle -->
+	<script type="text/javascript" src="tangle/Tangle.js"></script>
+
+	<!-- TangleKit (optional) -->
+	<link rel="stylesheet" href="tangle/TangleKit/TangleKit.css" type="text/css">
+	<script type="text/javascript" src="tangle/TangleKit/mootools.js"></script>
+	<script type="text/javascript" src="tangle/TangleKit/sprintf.js"></script>
+	<script type="text/javascript" src="tangle/TangleKit/BVTouchable.js"></script>
+	<script type="text/javascript" src="tangle/TangleKit/TangleKit.js"></script>
+
+	<!-- example -->
+	<script type="text/javascript">
+		function setUpTangle () {
+
+			var element = document.getElementById("pbs");
+
+			var tangle = new Tangle(element, {
+				initialize: function () {
+					this.nodes_N = 3;
+					this.quorum_R = 1;
+					this.quorum_W = 2;
+				},
+				update: function () {
+					if (this.quorum_W > this.nodes_N) this.quorum_W = this.nodes_N;
+					if (this.quorum_R > this.nodes_N) this.quorum_R = this.nodes_N;
+				}
+			});
+		}
+
+	</script>
+</head>
+
+<body onload="setUpTangle();">
+
+	<p>PBS</p>
+
+	<div id="pbs">
+
+	<dl>
+		<dt>Replica Configuration</dt>
+		<dd>Number of nodes <em>N</em>: <span data-var="nodes_N" class="TKAdjustableNumber" data-min="1" data-max="8"></span></dd>
+		<dd>Number of nodes in write quorum <em>W</em>: <span data-var="quorum_W" class="TKAdjustableNumber" data-min="1"></span></dd>
+		<dd>Number of nodes in read quorum <em>R</em>: <span data-var="quorum_R" class="TKAdjustableNumber" data-min="1"></span></dd>
+	</dl>
+
+	</div>
+
+</body>
+</html>
