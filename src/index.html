@@ -22,6 +22,20 @@
 				coeff *= (n - (k - i)) / i;
 			return coeff;
 		}
+		function Pw (Wr, t) {
+			if (t === 0) return 1;
+		}
+		function Pst (N, W, R, t) {
+			var nChooseR = nChooseK(N, R);
+			var coeff = nChooseK(N - W, N) / nChooseR;
+			var cond_prob = 0;
+			for (var c = W + 1; c <= N; c++)
+			{
+				var coeff_c = nChooseK(N - c, N) / nChooseR;
+				cond_prob += coeff_c * (Pw(c + 1, t) - Pw(c, t));	
+			}
+			return coeff + cond_prob;
+		}
 		function setUpTangle () {
 
 			var element = document.getElementById("pbs");
@@ -32,6 +46,11 @@
 					this.quorum_R = 1;
 					this.quorum_W = 2;
 					this.versions = 1;
+					this.t = 0;
+					this.W_lambda = 0.1;
+					this.A_lambda = 0.1;
+					this.R_lambda = 0.1;
+					this.S_lambda = 0.1;
 				},
 				update: function () {
 					if (this.quorum_W > this.nodes_N) this.quorum_W = this.nodes_N;
@@ -39,6 +58,7 @@
 					this.Ps = nChooseK(this.nodes_N - this.quorum_W, this.quorum_R) / nChooseK(this.nodes_N, this.quorum_R);
 					this.Psk = Math.pow(this.Ps, this.versions);
 					this.Psk_inv = 1 - this.Psk;
+					this.Pst = Pst(this.nodes_N, this.quorum_W, this.quorum_R, this.t);
 				}
 			});
 		}
@@ -52,6 +72,8 @@
 
 	<div id="pbs">
 
+	<p>Time t = <span data-var="t" class="TKAdjustableNumber" data-min="0" data-max="9"></span></p>
+
 	<dl>
 		<dt>Replica Configuration</dt>
 		<dd>Number of nodes <em>N</em>: <span data-var="nodes_N" class="TKAdjustableNumber" data-min="1" data-max="8"></span></dd>
@@ -59,11 +81,18 @@
 		<dd>Number of nodes in read quorum <em>R</em>: <span data-var="quorum_R" class="TKAdjustableNumber" data-min="1"></span></dd>
 		<dt>Tolerable Staleness</dt>
 		<dd>Number of versions <em>k</em>: <span data-var="versions" class="TKAdjustableNumber" data-min="1" data-max="9"></span></dd>
+
+		<dt>WARS Configuration</dt>
+		<dd>Write Request Latency: <span data-var="W_lambda" class="TKAdjustableNumber" data-min="0.01" data-max="1.5" data-format="%.3f" data-step="0.001"> ms</span></dd>
+		<dd>Write Ack Latency: <span data-var="A_lambda" class="TKAdjustableNumber" data-min="0.01" data-max="1.5" data-format="%.3f"> ms</span></dd>
+		<dd>Read Request Latency: <span data-var="R_lambda" class="TKAdjustableNumber" data-min="0.01" data-max="1.5" data-format="%.3f"> ms</span></dd>
+		<dd>Read Response Latency: <span data-var="S_lambda" class="TKAdjustableNumber" data-min="0.01" data-max="1.5" data-format="%.3f"> ms</span></dd>
 	</dl>
 
 	<p>Equation 1 = <span data-var="Ps" data-format="%.5f"></span></p>
 	<p>Equation 2 = <span data-var="Psk" data-format="%.5f"></span></p>
 	<p>Def 1 = <span data-var="Psk_inv" data-format="%.5f"></span></p>
+	<p>Equation 4 (at time t = <span data-var="t"></span>) = <span data-var="Pst" data-format="%.5f"></span></p>
 	</div>
 
 </body>
